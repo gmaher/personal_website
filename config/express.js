@@ -13,6 +13,9 @@ module.exports = function(){
 		app.use(compress());
 	}
 
+	app.set('views', './views');
+	app.set('view engine', 'jade');
+
 	app.use(bodyParser.urlencoded({
 		extended: true
 	}));
@@ -20,5 +23,8 @@ module.exports = function(){
 	app.use(methodOverride());
 
 	require('../routes/routes.js')(app)
+
+	app.use(express.static('./client'));
+
 	return app
 };
