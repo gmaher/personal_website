@@ -3,6 +3,9 @@ html
     title!= title
   body
     h1!= message
+
+    section(ng-view)
+
     img(src='test/Firefox_wallpaper.png')
 
     include scripts.jade
