@@ -1,7 +1,7 @@
 angular.module('main').config(['$routeProvider', function($routeProvider){
 		$routeProvider.
 			when('/',{
-				templateUrl: 'main/main.jade',
+				templateUrl: 'partials/main/main.jade',
 				controller: 'mainCtrl'
 			}).
 			when('/blog',{
