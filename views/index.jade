@@ -6,19 +6,16 @@ html
 
 	body
 
-		div.pure-g(style="background-color: #f0f1f5;")
-			div.pure-u-1-4(style="padding-bottom:20px; padding-top:20px;")
+		div.pure-g(style="")
+			div.pure-u-1-5(style="background-color: #000000; height:800px;")
 				a(href="/" class="pure-menu-heading pure-menu-link") Home
-			div.pure-u-1-3(style="padding-bottom:20px; padding-top:20px;")
-				div.pure-menu.pure-menu-horizontal
+				div.pure-menu
 					a(href="#" class="pure-menu-heading pure-menu-link") Projects
 					a(href="#!/research" class="pure-menu-heading pure-menu-link") Research
 					a(href="#!/resume" class="pure-menu-heading pure-menu-link") Resume
 					a(href="#!/blog" class="pure-menu-heading pure-menu-link") Blog
-			div.pure-u-1-3
 
-		div.pure-g
-			div.pure-u-1
+			div.pure-u-4-5(style="text-align: center;")
 				section(ng-view)
 
 		div.pure-g(style="background-color: #f0f1f5;")
