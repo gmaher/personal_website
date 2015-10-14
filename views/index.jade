@@ -2,6 +2,7 @@ html
 	head
 		title!= title
 		link(rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css")
+		link(rel="stylesheet",href="/css/side-menu.css")
 		meta(name="viewport" content="width=device-width, initial-scale=1")
 
 	body
@@ -15,7 +16,7 @@ html
 					a(href="#!/resume" class="pure-menu-heading pure-menu-link") Resume
 					a(href="#!/blog" class="pure-menu-heading pure-menu-link") Blog
 
-			div.pure-u-4-5(style="text-align: center;")
+			div.pure-u-4-5(style="")
 				section(ng-view)
 
 		div.pure-g(style="background-color: #f0f1f5;")
