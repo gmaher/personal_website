@@ -7,22 +7,26 @@ html
 
 	body
 
-		div.pure-g(style="")
-			div.pure-u-1-1(style="background-color: #000000;")
+		div.pure-g(style="text-align:center; ")
+			p(style="font:50px arial; height:20px; margin-top:10px") Gabriel Maher
 
-				div.pure-menu-horizontal
+		div.pure-g(style="")
+			div.pure-u-1(style="background-color: #000000; height: 50px; text-align:center;")
+
+				div.pure-menu-horizontal.content(style="padding-top: 10px;")
 					a(href="/" class="pure-menu-heading pure-menu-link") Home
 					a(href="#" class="pure-menu-heading pure-menu-link") Projects
 					a(href="#!/research" class="pure-menu-heading pure-menu-link") Research
 					a(href="#!/resume" class="pure-menu-heading pure-menu-link") Resume
 					a(href="#!/blog" class="pure-menu-heading pure-menu-link") Blog
 
-		div.pure-g(style="")
-			div.pure-u-4-5(style="")
+		div.pure-g(style="text-align:center")
+			div.pure-u-1(style="")
 				section(ng-view)
 
-		div.pure-g(style="background-color: #f0f1f5;")
+		div.pure-g(style="background-color: #f0f1f5; text-align:center")
 			div.pure-u-1
-				include footer.jade
+				div.content
+					include footer.jade
 
 		include scripts.jade
