@@ -8,14 +8,16 @@ html
 	body
 
 		div.pure-g(style="")
-			div.pure-u-1-5(style="background-color: #000000; height:800px;")
-				a(href="/" class="pure-menu-heading pure-menu-link") Home
-				div.pure-menu
+			div.pure-u-1-1(style="background-color: #000000;")
+
+				div.pure-menu-horizontal
+					a(href="/" class="pure-menu-heading pure-menu-link") Home
 					a(href="#" class="pure-menu-heading pure-menu-link") Projects
 					a(href="#!/research" class="pure-menu-heading pure-menu-link") Research
 					a(href="#!/resume" class="pure-menu-heading pure-menu-link") Resume
 					a(href="#!/blog" class="pure-menu-heading pure-menu-link") Blog
 
+		div.pure-g(style="")
 			div.pure-u-4-5(style="")
 				section(ng-view)
 
