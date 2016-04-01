@@ -1,31 +1,39 @@
 html
 	head
 		title!= title
-		link(rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css")
-		link(rel="stylesheet",href="/css/side-menu.css")
+		//link(rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css")
+		//link(rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/grids-responsive-min.css")
+		//link(rel="stylesheet",href="/css/side-menu.css")
+
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
 		meta(name="viewport" content="width=device-width, initial-scale=1")
 
 	body
 
-		div.pure-g(style="text-align:center; ")
-			p(style="font:50px arial; height:20px; margin-top:10px") Gabriel Maher
+		div.row(style="text-align:center;margin-top:10px; margin-bottom:30px; ")
+			p(style="font:50px arial; height:20px; ") Gabriel Maher
 
-		div.pure-g(style="")
-			div.pure-u-1(style="background-color: #000000; height: 50px; text-align:center;")
+		nav.row.navbar.navbar-inverse(style="")
+			div.container(style="text-align:center;")
+				ul.nav.navbar-nav
+					li 
+						a(href="#!/" class="pure-menu-heading pure-menu-link") Home
+					li
+						a(href="#!/projects" class="pure-menu-heading pure-menu-link") Projects
+					li
+						a(href="#!/research" class="pure-menu-heading pure-menu-link") Research
+					li
+						a(href="#!/resume" class="pure-menu-heading pure-menu-link") Resume
+					li
+						a(href="#!/blog" class="pure-menu-heading pure-menu-link") Blog
 
-				div.pure-menu-horizontal.content(style="padding-top: 10px;")
-					a(href="/" class="pure-menu-heading pure-menu-link") Home
-					a(href="#" class="pure-menu-heading pure-menu-link") Projects
-					a(href="#!/research" class="pure-menu-heading pure-menu-link") Research
-					a(href="#!/resume" class="pure-menu-heading pure-menu-link") Resume
-					a(href="#!/blog" class="pure-menu-heading pure-menu-link") Blog
-
-		div.pure-g(style="text-align:center")
-			div.pure-u-1(style="")
+		div.row(style="text-align:center")
+			div.col-md-1(style="")
 				section(ng-view)
 
-		div.pure-g(style="background-color: #f0f1f5; text-align:center")
-			div.pure-u-1
+		div.row(style="background-color: #f0f1f5; text-align:center")
+			div.col-md-1
 				div.content
 					include footer.jade
 

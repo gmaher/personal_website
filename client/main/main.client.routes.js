@@ -16,6 +16,10 @@ angular.module('main').config(['$routeProvider', function($routeProvider){
 				templateUrl: '/partials/resume/resume.jade',
 				controller: 'resumeCtrl'
 			}).
+			when('/projects',{
+				templateUrl: '/partials/projects/projects.jade',
+				controller: 'projectsCtrl'
+			}).
 			otherwise({
 				redirectTo: '/'
 			});
