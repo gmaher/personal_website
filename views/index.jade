@@ -11,29 +11,33 @@ html
 
 	body
 
-		div.row(style="text-align:center;margin-top:10px; margin-bottom:30px; ")
+		div.row.text-center(style="margin-top:10px; margin-bottom:30px; ")
 			p(style="font:50px arial; height:20px; ") Gabriel Maher
 
-		nav.row.navbar.navbar-inverse(style="")
-			div.container(style="text-align:center;")
-				ul.nav.navbar-nav
-					li 
-						a(href="#!/" class="pure-menu-heading pure-menu-link") Home
-					li
-						a(href="#!/projects" class="pure-menu-heading pure-menu-link") Projects
-					li
-						a(href="#!/research" class="pure-menu-heading pure-menu-link") Research
-					li
-						a(href="#!/resume" class="pure-menu-heading pure-menu-link") Resume
-					li
-						a(href="#!/blog" class="pure-menu-heading pure-menu-link") Blog
+		div.row
+			div.col-md-3
+			div.col-md-6
+				div.row(style="")
+						nav.navbar.navbar-inverse.col-md-6(style="float:none; margin: 0 auto; display:table; position:relative;")
+							a.navbar-brand(href="#!/") Home
+							ul.nav.navbar-nav
+								li.nav-item
+									a.nav-link(href="#!/projects") Projects
+								li.nav-item
+									a.nav-link(href="#!/research") Research
+								li.nav-item
+									a.nav-link(href="#!/resume") Resume
+								li.nav-item
+									a.nav-link(href="#!/blog") Blog
 
-		div.row(style="text-align:center")
-			div.col-md-1(style="")
-				section(ng-view)
+				div.row
+					div.container(style="")
+						section(ng-view)
 
-		div.row(style="background-color: #f0f1f5; text-align:center")
-			div.col-md-1
+			div.col-md-3
+
+
+		div.row(style="background-color: #f0f1f5;")
 				div.content
 					include footer.jade
 
