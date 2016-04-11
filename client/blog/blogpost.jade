@@ -1,8 +1,0 @@
-div.content
-	div.col-md-10
-		div.row(style="margin-bottom:10px")
-			p(style="font-size:2em") {{post.title}}
-
-		div.row(ng-repeat="obj in post.postContent" style="margin-bottom:10px")
-			p(ng-if="obj.type == 'text'") {{obj.content}}
-			img(ng-if="obj.type== 'image'" src="/img/{{obj.path}}")

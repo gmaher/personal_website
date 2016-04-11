@@ -8,9 +8,8 @@ angular.module('main').config(['$routeProvider', function($routeProvider){
 				templateUrl: '/partials/blog/blog.jade',
 				controller: 'blogCtrl'
 			}).
-			when('/blog/:postparam',{
-				templateUrl: '/partials/blog/blogpost.jade',
-				controller: 'blogPostCtrl'
+			when('/blog/firstpost',{
+				templateUrl: '/partials/blog/blog.firstpost.jade'
 			}).
 			when('/research',{
 				templateUrl: '/partials/research/research.jade',
