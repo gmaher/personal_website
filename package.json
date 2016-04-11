@@ -1,6 +1,9 @@
 {
   "name": "Mean_Template",
   "version": "0.0.1",
+  "scripts" : {
+    "postinstall" : "bower install"
+  }
   "dependencies": {
     "body-parser": "~1.8.0",
     "compression": "1.0.11",
