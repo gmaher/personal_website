@@ -13,5 +13,6 @@
   "scripts" : {
     "start" : "node server.js",
     "postinstall" : "export HOME=/var/lib/openshift/570bccff89f5cf64ab0000b1/app-root/runtime/repo; ./node_modules/bower/bin/bower install"
-  }
+  },
+  "main": "server.js"
 }
