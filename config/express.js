@@ -24,7 +24,6 @@ module.exports = function(){
 
 	require('../routes/routes.js')(app)
 
-	app.use(express.static('./client'));
 
 	return app
 };
