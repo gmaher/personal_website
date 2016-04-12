@@ -1,9 +1,6 @@
 {
-  "name": "Mean_Template",
+  "name": "GabrielMaher.com",
   "version": "0.0.1",
-  "scripts": {
-    "postinstall": "./node_modules/bower/bin/bower install"
-  },
   "dependencies": {
     "body-parser": "~1.8.0",
     "bower": "^1.7.9",
@@ -12,5 +9,9 @@
     "jade": "^1.11.0",
     "method-override": "~2.2.0",
     "morgan": "~1.3.0"
+  },
+  "scripts" : {
+    "start" : "node server.js",
+    "postinstall" : "export HOME=/var/lib/openshift/570bccff89f5cf64ab0000b1/app-root/runtime/repo; ./node_modules/bower/bin/bower install"
   }
 }

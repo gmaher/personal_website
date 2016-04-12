@@ -4,7 +4,7 @@ var express = require('./config/express');
 
 var app = express();
 
-var port = process.env.PORT || 8000
+var port = process.env.OPENSHIFT_NODEJS_PORT || 8000
 app.listen(port);
 
 module.exports = app
