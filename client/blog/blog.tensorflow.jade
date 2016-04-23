@@ -8,21 +8,19 @@ div.content
 
 			p(style="font-size:1.3em") In doing this kind of research, you inevitably end up having to write a lot of code to test out different neural network architectures, different optimization settings and many other things. To make things easier you typically use a code library that already has a lot of the functionality you need. The point is, having the right library can make all the difference between making your work easy, or difficult.
 
-			p(style="font-size:1.3em") Up to now I have been using the <a href="http://caffe.berkeleyvision.org/"> Caffe</a> library for most of my projects. Caffe is a neural network library written in C++ with support for training neural networks on GPUs. As a result it's fast and does a good job of making it possible to train some serious networks. However, I find it hard to write flexible code with Caffe. So whenever I want to try a lot of different experiements I end up having to write a lot of different code which is cumbersome. 
+			p(style="font-size:1.3em") Up to now I have been using the <a href="http://caffe.berkeleyvision.org/"> Caffe</a> library for most of my projects. Caffe is a neural network library written in C++ with support for training neural networks on GPUs. As a result it's fast and does a good job of making it possible to train some serious networks. However, I find it hard to write flexible code with Caffe. So whenever I want to try a lot of different experiments I end up having to write a lot of different code which is cumbersome. 
 
 			p(style="font-size:1.3em")  Google recently announced the release of their new open-source software framework <a href="https://www.tensorflow.org/">Tensorflow</a> with, among others, the goal of making deep learning research easier. Because of my frustrations with Caffe, I decided it would be a good time to experiment with Tensorflow. I think it's a very cool framework and with this blog post I want to share what I have learned about how Tensorflow works. That way, if you ever decide to look into it, you will hopefully have a head start.
 
 			p(style="font-size:1.8em") Tensorflow 101 
 
+			p(style="font-size:1.3em") Tensorflow's functionality can be accessed via both a python and C++ library. However, at the time of this writing the python library is the most convenient way to use Tensorflow, so that is what I will focus on in this post.
+
 			p(style="font-size:1.3em") 
 
 
-			img(src="/img/meanstack.png" style="width:600px;heigh:600px;")
+			p(style="font-size:1.8em") Monitoring Ops with Tensorboard
 
-			a(href="https://github.com/gmaher/mean_app_template") MEAN app template
-
-			p(style="font-size:1.3em")
-
-			p(style="font-size:1.3em") Cheers!
+			p(style="font-size:1.3em") Another nice thing about Tensorflow is that it comes with an application that can monitor your code. This is useful for debugging and seeing whether your experiments are working.
 
 			p(style="font-size:1.3em") Gabriel
