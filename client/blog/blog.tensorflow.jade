@@ -10,14 +10,32 @@ div.content
 
 			p(style="font-size:1.3em") Up to now I have been using the <a href="http://caffe.berkeleyvision.org/"> Caffe</a> library for most of my projects. Caffe is a neural network library written in C++ with support for training neural networks on GPUs. As a result it's fast and does a good job of making it possible to train some serious networks. However, I find it hard to write flexible code with Caffe. So whenever I want to try a lot of different experiments I end up having to write a lot of different code which is cumbersome. 
 
-			p(style="font-size:1.3em")  Google recently announced the release of their new open-source software framework <a href="https://www.tensorflow.org/">Tensorflow</a> with, among others, the goal of making deep learning research easier. Because of my frustrations with Caffe, I decided it would be a good time to experiment with Tensorflow. I think it's a very cool framework and with this blog post I want to share what I have learned about how Tensorflow works. That way, if you ever decide to look into it, you will hopefully have a head start.
+			p(style="font-size:1.3em")  Google recently announced the release of their new open-source software framework <a href="https://www.tensorflow.org/">Tensorflow</a> with the goal of, among others, making deep learning research easier. Because of my frustrations with Caffe, I decided it would be a good time to experiment with Tensorflow. I think it's a very cool framework and with this blog post I want to share what I have learned about how Tensorflow works. That way, if you ever decide to look into it, you will hopefully have a head start.
 
 			p(style="font-size:1.8em") Tensorflow 101 
 
 			p(style="font-size:1.3em") Tensorflow's functionality can be accessed via both a python and C++ library. However, at the time of this writing the python library is the most convenient way to use Tensorflow, so that is what I will focus on in this post.
 
+			p(style="font-size:1.3em") Conceptually, Tensorflow lets us write our programs, or algorithms, as a series of operations, or ops, that are strung together to form a computational graph. A computational graph is basically like a flow chart, where we start with a few blocks that then lead into other blocks, all the way until we reach the end of the chart. An example of a computational graph looks like this:
+
+			img(src="/img/comp_graph.png" style="width:600px;height:500px;")
+
+			p(style="font-size:1.3em") In this case we have combined some simple mathematical operations to compute <b>z=d*c=(a+b)*c</b>. Now this is a very simple example and normally you would not need a library to do this, but when we are dealing with more complicated operations, it is very useful to be able to systematically structure our code in this way. So when using Tensorflow, most of our work involves breaking down our code into smaller operations and stringing these together to get the desired output. Tensorflow then takes care of storing the state of any variables in the graph and feeds them through the specified operations.
+
+			p(style="font-size:1.3em") Another useful feature of Tensorflow is that it can compute the gradient of a specified cost function with respect to the parameters in our graph. We can make use of this feature to optimize our graphs for machine learning applications.
+
+			p(style="font-size:1.8em") Installing Tensorflow 
+
+			p(style="font-size:1.3em") Naturally the first thing to do is to figure out how to install Tensorflow.  One of the ways to get Tensorflow is to install it as a Python package. This is probably also the easiest way to install. Do note however that if you want to use Tensorflow with a GPU you will need the latest version of CUDA and CUDNN installed on your system beforehand. Once the dependencies are installed you can get Tensorflow by using Python's pip install command. The official documentation lists the exact commands <a href="https://www.tensorflow.org/versions/r0.8/get_started/os_setup.html#pip-installation">here</a>
+
+			p(style="font-size:1.3em") If, like me, you do not have the latest version of CUDA installed and do not want to install it, then you will have to download and build the Tensorflow python package from source. Unfortuantley this is a bit more complicated. It basically requires you to install Google's <a href="http://bazel.io/docs/install.html">Bazel build system</a> which you can then use to build the Tensorflow packages. Again the official documentation provides good instructions <a href="https://www.tensorflow.org/versions/r0.8/get_started/os_setup.html#installing-from-sources">here</a>. I did get stuck at a few points and found looking at the automatic install script, written by Erik Bernhardsson, <a href="https://gist.github.com/erikbern/78ba519b97b440e10640">here</a> to be useful to see what I was doing wrong.
+
+
+			p(style="font-size:1.8em") Example: Linear Regression 			
+
 			p(style="font-size:1.3em") 
 
+			$$\hat{y} = w^Tx + b$$
 
 			p(style="font-size:1.8em") Monitoring Ops with Tensorboard
 
