@@ -33,12 +33,76 @@ div.content
 
 			p(style="font-size:1.8em") Example: Linear Regression 			
 
+			p(style="font-size:1.3em") To get a better idea of how Tensorflow works and to see how to call some of its functions let's cover a simple example. The example I will cover is how to perform linear regression using Tensorflow. The full code can be found <a href="https://github.com/gmaher/tensorflow_examples/blob/master/linear_regression.py">here</a>.
+
+			p(style="font-size:1.3em") The basic premise of linear regression is that we have data points \(x^{(i)}\) with associated output variables \(y^{(i)}\) and we would like to estimate the parameters, \(w\) and \(b\) to produce a predictor:
+
+			$$\hat{y}^{(i)} = w^Tx^{(i)} + b$$
+
+			p(style="font-size:1.3em") such that \(\hat{y}^{(i)}\) is close to \(y^{(i)}\). To get this working in Tensorflow we have to set up our computational graph to compute \(\hat{y}^{(i)}\) and then call some of Tensorflow's optimization functions to find the best values for \(w\) and \(b\). The code for doing the first part is:
+
+			pre 
+				code.
+					import tensorflow as tf
+					import numpy as np
+
+					#create the data and add gaussian noise to the output Y
+					#note need the float 32 because numpy default is float64
+					#and tensorflow default is float32
+					X1 = np.random.rand(1,100).astype(np.float32)
+					X2 = X1**2
+					X = np.vstack((X1,X2))
+					Y = 2*X[0,:] + 0.2*X[1,:] + 1 + 0.05*np.random.normal(size=100)
+
+					#set up the tensorflow graph
+					W = tf.Variable(tf.random_uniform([2,1],0,4.0))
+					b = tf.Variable(tf.zeros([1]))
+
+
+					yhat = tf.matmul(tf.transpose(W),X) + b
+
+
+			p(style="font-size:1.3em") The first thing to note is that since we are not optimizing \(x\) or \(y\), they do not have to be a part of our graph. So we can just declare them as numpy arrays. Given \(x\), here we are trying to find \(w\) and \(b\) to fit \(y=2x+0.2x^2 +1 +\epsilon\) where \(\epsilon\) is some added noise to simulate measurement error.
+
+			p(style="font-size:1.3em") The next step is to have Tensorflow declare \(w\) and \(b\) as parts of our computational graph. This is done using the command <b>tf.Variable()</b>. What this command does is tell Tensorflow to add a variable, or tensor, to our graph (these are like the a, b and c nodes in the picture above). We can also provide an input argument that tells Tensorflow what dimensions to give the tensor and with what values to initialize it. So for example the command <b>tf.Variable(tf.random_uniform([2,1],0,4.0))</b> tells Tensorflow to initialize a tensor with 2 rows and 1 column with initial values randomly selected from the uniform distribution between 0 and 4.
+
+			p(style="font-size:1.3em") Once the necessary variables are declared, we then have to get Tensorflow to add the required mathematical operations, or ops, to our graph. Here this is done with the code <b>yhat = tf.matmul(tf.transpose(W),X) + b</b>. This tells Tensorflow to transpose \(w\), then compute the matrix multiplication \(w^Tx\), then add \(b\) and store the result in \(\hat{y}\), which becomes a new tensor node in our graph.
+
+			p(style="font-size:1.3em") We now have all the required ops set up to calculate \(\hat{y}\) but we still need to get Tensorflow to optimize \(w\) and \(b\) so that \(\hat{y}\) is close to \(y\). The way this is done in Tensorflow is that we define a loss function to measure the error. Then we create an optimizer object and get that optimizer object to minimize the loss function! The code that does all that is:
+
+			pre
+				code.
+					#set up loss function to minimize
+					loss = tf.reduce_mean(tf.square(Y-yhat)) + 0.05*b*b + 0.05*tf.reduce_mean(tf.square(W)) 
+					optimizer = tf.train.GradientDescentOptimizer(0.05)
+					train = optimizer.minimize(loss)
+
+			p(style="font-size:1.3em") The loss function we're using is the regularized \(L_2\) error:
+
+			$$L(\hat{y},y) = \frac{1}{N}\sum_{i=1}^N(\hat{y}^{(i)}-y^{(i)})^2 + 0.05b^2 + 0.05||w||_2^2$$
+
+			p(style="font-size:1.3em") we set this up as an op in Tensorflow using the code <b>loss = tf.reduce_mean(tf.square(Y-yhat)) + 0.45*b*b + 0.45*tf.reduce_mean(tf.square(W))</b>. The command <b>tf.square()</b> computes the elementwise square of a tensor and the command <b>tf.reduce_mean()</b> computes the average of all the values contained in a tensor. The last two lines of code show how easy it is to do optimization using Tensorflow. We simply create a <b>tf.train.GradientDescentOptimizer</b> object and then define the op <b>train</b> as a call to <b>optimizer.minimize(loss)</b> which will run one step of gradient descent. Notice that we did not have to tell Tensorflow anything about which variables to optimize, it already knows that \(w\) and \(b\) are the only nodes in the graph that affect the loss and so will automatically optimize their values.
+
+			p(style="font-size:1.3em") Now is the time to note that so far we have only constructed our graph and Tensorflow has not actually computed anything for us. This is because Tensorflow separates the construction of an op, from actually running that op. The code that actually runs the ops in our graph is:
+
+			pre
+				code.
+					init = tf.initialize_all_variables()
+
+					sess = tf.Session()
+					sess.run(init)
+
+					#run the gradient descent by repeatedly calling sess.run(train)
+					#this runs the operation specified by the train variable above
+					for step in xrange(2001):
+						sess.run(train)
+						if step % 20 == 0:
+							print(step, sess.run(W), sess.run(b), sess.run(loss))
+
+			p(style="font-size:1.3em") We first create an op <b>init</b> which, when run, will cause Tensorflow to initialize all the variables in the graph. Next to be able to run our ops we have to define a Session object, and it is with this session object that we can actually run ops. For example the code <b>sess.run(init)</b> will tell Tensorflow to actually execute the init op. After initializing everything, we can perform optimization by repeatedly calling the train op, this is why we call <b>sess.run(train)</b> in a for loop.
+
+			p(style="font-size:1.8em") Closing Remarks
+
 			p(style="font-size:1.3em") 
-
-			$$\hat{y} = w^Tx + b$$
-
-			p(style="font-size:1.8em") Monitoring Ops with Tensorboard
-
-			p(style="font-size:1.3em") Another nice thing about Tensorflow is that it comes with an application that can monitor your code. This is useful for debugging and seeing whether your experiments are working.
 
 			p(style="font-size:1.3em") Gabriel
