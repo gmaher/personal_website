@@ -99,10 +99,16 @@ div.content
 						if step % 20 == 0:
 							print(step, sess.run(W), sess.run(b), sess.run(loss))
 
-			p(style="font-size:1.3em") We first create an op <b>init</b> which, when run, will cause Tensorflow to initialize all the variables in the graph. Next to be able to run our ops we have to define a Session object, and it is with this session object that we can actually run ops. For example the code <b>sess.run(init)</b> will tell Tensorflow to actually execute the init op. After initializing everything, we can perform optimization by repeatedly calling the train op, this is why we call <b>sess.run(train)</b> in a for loop.
+			p(style="font-size:1.3em") We first create an op <b>init</b> which, when run, will cause Tensorflow to initialize all the variables in the graph. Next to be able to run our ops we have to define a Session object, and it is with this session object that we can actually run ops. For example the code <b>sess.run(init)</b> will tell Tensorflow to actually execute the init op. After initializing everything, we can perform optimization by repeatedly calling the train op, this is why we call <b>sess.run(train)</b> in a for loop. Also note that to get the value of any tensors we can simply call <b>sess.run(tensor name)</b> as is done in the print statement.
+
+			p(style="font-size:1.3em") That completes our linear regression example. Running the full code, we get the plot shown below, which shows that our optimization worked and produced parameters that resulted in a good fit.
+
+			img(src="/img/plot.png" style="width:500px;height:400px;")
 
 			p(style="font-size:1.8em") Closing Remarks
 
-			p(style="font-size:1.3em") 
+			p(style="font-size:1.3em") Hopefully this post has helped you become more familiar with Tensorflow and how to get started actually writing Tensorflow code. The basic idea to remember is that we define our code as a computational graph by getting Tensorflow to add ops to our graph. We then run those ops by creating a session object and calling <b>session_object_name.run(ops)</b>. Tensorflow provides a lot of different ops out of the box, and the <a href="https://www.tensorflow.org/versions/r0.8/api_docs/index.html">official documentation</a> provides a good overview of what they do and how to use them.
+
+			p(style="font-size:1.3em") There are more cool features that Tensorflow provides that I was not able to get into yet. In particular the Neural Network capabilities of Tensorflow are very interesting. Tensorflow even provides an interface called Tensorboard that you can use to monitor your code, which makes it easier to debug and see what is going on. I will be writing about both of these aspects of Tensorflow in another blog post, so stay tuned!
 
 			p(style="font-size:1.3em") Gabriel
