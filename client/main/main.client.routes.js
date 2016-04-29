@@ -12,7 +12,8 @@ angular.module('main').config(['$routeProvider', function($routeProvider){
 				templateUrl: '/partials/blog/blog.firstpost.jade'
 			}).
 			when('/blog/tensorflow',{
-				templateUrl: '/partials/blog/blog.tensorflow.jade'
+				templateUrl: '/partials/blog/blog.tensorflow.jade',
+				controller: 'mathCtrl'
 			}).
 			when('/research',{
 				templateUrl: '/partials/research/research.jade',
