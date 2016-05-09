@@ -1,0 +1,48 @@
+//outline
+//intro to tensorboard, what is it? Why is it cool?
+//Getting tensorboard installed
+//how does tensorboard work?
+//outline how to use tensorboard:
+// *create summary ops with name
+// *merge summaries
+// *create summary writer, specify directory
+// *running summary ops produces string, write with summary writer
+
+//convolutional neural network example
+// explain cifar10
+// show graph of network, references for further reading
+// explain summary ops being collected (output histogram) train,validation error
+// show tensorboard output
+
+div.content
+	div.col-md-10
+		div.row(style="margin-bottom:10px")
+			p(style="font-size:2em") Monitoring Tensorflow Applications with Tensorboard
+
+		div.row(style="margin-bottom:10px")
+			p(style="font-size:1.3em") When running machine learning applications, or testing machine learning code, there is usually a lot going on that we want to keep track off. Typically we will be monitoring the training and validation error to make sure our model is converging to something sensible. We are also usually interested in the values, or distributions of the coefficients of our model for similar reasons. Normally you would have to write a bunch of code yourself to output all the quantities you are interested in monitoring. Google's Tensorflow, however, provides us with an application, called Tensorboard, that makes monitoring machine learning code very convenient. In this post I will show you how to use Tensorboard with a simple convolutional neural network example.
+
+			p(style="font-size:1.3em") If you have not yet done so, take a look at <a href="https://www.tensorflow.org/">Tensorflow</a> or read my <a href="#!/blog/tensorflow">earlier blog post</a> about Tensorflow, as you will need to be familiar with the way Tensorflow works to understand this post.
+
+			p(style="font-size:1.8em") What is Tensorboard? 
+
+			p(style="font-size:1.3em") Tensorboard is a standalone application that comes bundled with Tensorflow. When running Tensorflow code we can output so-called summaries and then call Tensorboard to visualize those summaries and display them in a graphical user interface (GUI). Tensorboard can also be used to visualize our Tensorflow graphs, which is useful when your graphs start to become large or complex.
+
+			p(style="font-size:1.8em") How does Tensorboard work?
+
+			p(style="font-size:1.3em") Earlier we learned that with Tensorflow we build applications as a computational graph, where each node of the graph stores an operation, or a variable. An additional feature of Tensorflow is that we can add so-called summary operations to our graph and associate them with particular nodes in our graph. 
+
+			p(style="font-size:1.3em") When run, these summary operations will serialize the data of the node that is associated with it and output the data into a file that can be read by Tensorboard. We can then run Tensorboard and tell it where to find the files and it will start visualizing the information for us! So basically the workflow when using Tensorboard is:
+
+			ul
+				li(style="font-size:1.3em") Build your computational graph/code.
+				li(style="font-size:1.3em") Attach summary ops to the nodes you are interested in examining.
+				li(style="font-size:1.3em") Start running your graph as you normally would
+				li(style="font-size:1.3em") Additionally run the summary ops at the part in your code when you would like to see the values of the associated nodes
+				li(style="font-size:1.3em") When the code is done running, run Tensorboard to visualize the sumamry outputs
+
+			p(style="font-size:1.8em") Convolutional Neural Network example
+
+			p(style="font-size:1.3em")
+
+			p(style="font-size:1.3em")
