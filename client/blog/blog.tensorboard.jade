@@ -20,7 +20,7 @@ div.content
 			p(style="font-size:2em") Monitoring Tensorflow Applications with Tensorboard
 
 		div.row(style="margin-bottom:10px")
-			p(style="font-size:1.3em") When running machine learning applications, or testing machine learning code, there is usually a lot going on that we want to keep track off. Typically we will be monitoring the training and validation error to make sure our model is converging to something sensible. We are also usually interested in the values, or distributions of the coefficients of our model for similar reasons. Normally you would have to write a bunch of code yourself to output all the quantities you are interested in monitoring. Google's Tensorflow, however, provides us with an application, called Tensorboard, that makes monitoring machine learning code very convenient. In this post I will show you how to use Tensorboard with a simple convolutional neural network example.
+			p(style="font-size:1.3em") When running machine learning applications, or testing machine learning code, there is usually a lot going on that we want to keep track of. Typically we will be monitoring the training and validation error to make sure our model is converging to something sensible. We are also usually interested in the values, or distributions of the coefficients of our model for similar reasons. Normally you would have to write a bunch of code yourself to output all the quantities you are interested in monitoring. Google's Tensorflow, however, provides us with an application, called Tensorboard, that makes monitoring machine learning code very convenient. In this post I will show you how to use Tensorboard with a simple convolutional neural network example.
 
 			p(style="font-size:1.3em") If you have not yet done so, take a look at <a href="https://www.tensorflow.org/">Tensorflow</a> or read my <a href="#!/blog/tensorflow">earlier blog post</a> about Tensorflow, as you will need to be familiar with the way Tensorflow works to understand this post.
 
@@ -38,11 +38,17 @@ div.content
 				li(style="font-size:1.3em") Build your computational graph/code.
 				li(style="font-size:1.3em") Attach summary ops to the nodes you are interested in examining.
 				li(style="font-size:1.3em") Start running your graph as you normally would
-				li(style="font-size:1.3em") Additionally run the summary ops at the part in your code when you would like to see the values of the associated nodes
+				li(style="font-size:1.3em") Additionally run the summary ops
 				li(style="font-size:1.3em") When the code is done running, run Tensorboard to visualize the sumamry outputs
 
 			p(style="font-size:1.8em") Convolutional Neural Network example
 
-			p(style="font-size:1.3em")
+			p(style="font-size:1.3em") To show some of the actual code you need to write to use Tensorboard, I have written an example script that trains a simple two layer convolutional neural network and outputs summaries about the network. The code can be found <a href='https://github.com/gmaher/tensorflow_examples/blob/master/nn_cifar10.py'>here</a>. If you want to run it you will also need to download the <a href='https://www.cs.toronto.edu/~kriz/cifar.html'>CIFAR10 data</a> into a subfolder called data.
+
+			p(style="font-size:1.3em") Giving a complete explanation about convolutional neural networks is a bit beyond the scope of this post. If you want to learn more about them check out the <a href='http://cs231n.stanford.edu/syllabus.html'>CS231n class notes</a> from Stanford, or just google around a bit. However to give you a bit of an idea about how to the code works, here is a picture of the computational graph the code creates:
+
+			img(src="/img/convnn.png" style="width:600px;height:500px;")
+
+			p(style="font-size:1.3em") The graph reads from left to right, and since I ran out of space I cut it off at the class_loss output, so it's missing the regularization of the weights. Note that the summary ops are highlighted in red. So we can see how summary ops are basically just intermediate nodes that extract outputs at particular points in the graph.
 
 			p(style="font-size:1.3em")
