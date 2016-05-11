@@ -168,4 +168,47 @@ div.content
 
 			p(style="font-size:1.3em") The line <b>opt = tf.train.MomentumOptimizer(lr, momentum, name='mom')</b> defines a momentum gradient descent optimizer and <b>train = opt.minimize(loss)</b> defines the op <b>train</b> which will run a step of momentum gradient descent when run. Finally it is  time to note that when a summary op is run it returns a summary string, however the summary string still needs to be written to a file, for that we need a summary writer. So with the line <b>train_write = tf.train.SummaryWriter('./summaries', sess.graph_def)</b> we make a summary writer which will write summary string files to the folder ./summaries (the next part of the code will show us how that works).
 
-			p(style="font-size:1.3em") In the final part of the code we
+			p(style="font-size:1.3em") In the final part of the code we load and reformat the CIFAR10 data and then start running our training and summary ops.
+
+			pre
+				code.
+					#still need to get the cifar10 data to feed to the graph
+					data = unpickle("./data/cifar10/cifar-10-batches-py/data_batch_1")
+					N,W = data['data'].shape
+
+					imgdata = np.zeros((N, Npix, Npix, Nchannels))
+					for i in range(0,3):
+						imgdata[:,:,:,i] = np.reshape(data['data'][:,i*1024:(i+1)*1024], (N,32,32)).astype(np.float32)
+						imgdata[:,:,:,i] = (imgdata[:,:,:,i]-125)/125
+
+					#get validation data too
+					val_data = unpickle("./data/cifar10/cifar-10-batches-py/data_batch_2")
+					N,W = val_data['data'].shape
+
+					val_imgdata = np.zeros((N, Npix, Npix, Nchannels))
+					for i in range(0,3):
+						val_imgdata[:,:,:,i] = np.reshape(val_data['data'][:,i*1024:(i+1)*1024], (N,32,32)).astype(np.float32)
+						val_imgdata[:,:,:,i] = (val_imgdata[:,:,:,i]-125)/125
+
+					#now we can start the training loop
+					for step in xrange(1001):
+						
+						#this is where we get data batches and tell the graph
+						#to use the batches instead of the placeholder variables
+						tup = get_batch(imgdata, data['labels'], Nbatch)
+						sess.run(train, feed_dict={x_batch: tup[0], y_batch:tup[1]})
+						
+						if step % 20 == 0:
+							sumstr = sess.run(full_Summary,feed_dict={x_batch: tup[0], y_batch:tup[1]})
+							train_write.add_summary(sumstr,step)
+							print('train: ', sess.run(loss,feed_dict={x_batch: tup[0], y_batch:tup[1]}))
+
+							#also print validation data
+							tup = get_batch(val_imgdata, val_data['labels'], Nbatch)
+							valstr = sess.run(val_loss_sum, feed_dict={x_batch: tup[0], y_batch:tup[1]})
+							train_write.add_summary(valstr,step)
+							print('val: ', sess.run(loss,feed_dict={x_batch: tup[0], y_batch:tup[1]}))
+
+			p(style="font-size:1.3em") The CIFAR10 data comes as a matrix with dimensions \(N\times 1024\) where each row of the matrix is all the pixels for one image as a list. Our neural network expects \(32\times32\) images as input so we need to reshape the data.
+
+			p(style="font-size:1.3em") If you remember, at the beginning of this post we discussed the use of placeholder variables. The beginning of the training loop shows how using placeholder variables changes the way we run our network. We first get a new batch every iteration by calling <b>get_batch</b> and then we run the <b>train</b> op with the line <b>sess.run(train, feed_dict={x_batch: tup[0], y_batch:tup[1]})</b>. When we provide the argument <b>feed_dict={x_batch: tup[0], y_batch:tup[1]}</b> it tells tensorflow to substitute the placeholder variables <b>x_batch</b> and <b>y_batch</b> with the values returned from <b>get_batch</b>. This way we can provide a different batch of data to the network for every training iteration.
