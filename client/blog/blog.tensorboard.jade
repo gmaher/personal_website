@@ -45,10 +45,127 @@ div.content
 
 			p(style="font-size:1.3em") To show some of the actual code you need to write to use Tensorboard, I have written an example script that trains a simple two layer convolutional neural network and outputs summaries about the network. The code can be found <a href='https://github.com/gmaher/tensorflow_examples/blob/master/nn_cifar10.py'>here</a>. If you want to run it you will also need to download the <a href='https://www.cs.toronto.edu/~kriz/cifar.html'>CIFAR10 data</a> into a subfolder called data.
 
-			p(style="font-size:1.3em") Giving a complete explanation about convolutional neural networks is a bit beyond the scope of this post. If you want to learn more about them check out the <a href='http://cs231n.stanford.edu/syllabus.html'>CS231n class notes</a> from Stanford, or just google around a bit. However to give you a bit of an idea about how to the code works, here is a picture of the computational graph the code creates:
+			p(style="font-size:1.3em") Giving a complete explanation about convolutional neural networks is a bit beyond the scope of this post. If you want to learn more about them check out the <a href='http://cs231n.stanford.edu/syllabus.html'>CS231n class notes</a> from Stanford, or just google around a bit. However to give you a bit of an idea about how the code works, here is a picture of the computational graph the code creates:
 
 			img(src="/img/convnn.png" style="width:600px;height:500px;")
 
-			p(style="font-size:1.3em") The graph reads from left to right, and since I ran out of space I cut it off at the class_loss output, so it's missing the regularization of the weights. Note that the summary ops are highlighted in red. So we can see how summary ops are basically just intermediate nodes that extract outputs at particular points in the graph.
+			p(style="font-size:1.3em") It looks complicated, but essentially the graph reads from left to right. We start with the convolution operation applied to \(x\) and \(W_1\) and then add a bias term. After the convolution there is a fully-connected layer which applies a matrix multiply with \(W_2\). Since CIFAR10 is a multiclass classification problem we're using a cross entropy softmax loss function. Since I ran out of space I cut the graph off at the class_loss output, so it's missing the regularization of the weights. Note that the summary ops are highlighted in red. So we can see how summary ops are basically just intermediate nodes that extract outputs at particular points in the graph.
 
-			p(style="font-size:1.3em")
+			p(style="font-size:1.3em") To see how the summary operations work and how to output files that are readable by Tensorboard, we will step through the code piece by piece. In the first part of the code we mainly set up some assistance functions and define parameters needed to construct the network and train it:
+
+			pre
+				code.
+					import tensorflow as tf
+					import numpy as np
+					import cPickle
+					import matplotlib.pyplot as plt
+
+					#function to get cifar10 data
+					#returns a dictionary with key data and key labels
+					def unpickle(file):
+						fo = open(file, 'rb')
+						dict = cPickle.load(fo)
+						fo.close()
+						return dict
+
+					def get_batch(xdata, ydata, nbatch):
+						N = len(ydata)
+						inds = np.random.choice(N, size=nbatch, replace=False)
+						xret = xdata[inds,:]
+						labs = [ydata[i] for i in inds]
+						yret = np.zeros((nbatch,10))
+						yret = np.zeros((nbatch,10))
+						for i in range(0,nbatch):
+							yret[i,labs[i]] = 1
+						return (xret,yret)
+
+					Nbatch = 50
+					Npix = 32
+					Nchannels = 3
+					Nlabels = 10
+					Nfilters = 32
+					std_init = 0.01
+					weight_decay = 0.000
+					lr = 1e-2
+					momentum = 0.9
+
+			p(style="font-size:1.3em") The function <b>unpickle</b> is taken from the CIFAR10 website and is used to unpack the CIFAR10 data. Additionally, since we want to use batches of data when training neural networks, we define the function <b>get_batch</b> which takes the entire data set and returns a batch with <b>nbatch</b> examples. After the function definitions we define network and training parameters. For example <b>Npix=32</b> is used to specify that the input images have 32x32 pixels and <b>Nlabels=10</b> specifies that there are 10 classes in the dataset.
+
+			p(style="font-size:1.3em") The next part of the code, sets up the input variables for the network, the convolutional layer and the histogram output summary for the convolutional layer:
+
+			pre
+				code.
+					#We will feed the data to the network at run time via a function
+					#so for now we need to create a tensorflow placeholder variable
+					#to be able to crate the NN layers
+
+					x_batch = tf.placeholder(np.float32, shape=(Nbatch, Npix, Npix, Nchannels), name="data")
+					y_batch = tf.placeholder(np.float32, shape=(Nbatch, Nlabels), name="labels")
+
+					#Now need to create a filter tensor to pass to a convolution layer
+					W1 = tf.Variable(tf.random_normal([3,3,3,Nfilters], stddev=std_init), name='W1')
+					b1 = tf.Variable(tf.zeros([Nfilters]), name='b1')
+
+					conv1 = tf.nn.conv2d(x_batch, W1, [1,1,1,1], padding="SAME")
+					conv1_bias = tf.nn.bias_add(conv1,b1, name='conv1bias')
+					out1 = tf.nn.relu(conv1_bias, name='out1')
+
+					#histogram summary to monitor outputs
+					hist_out1 = tf.histogram_summary('out1_hist', out1)
+
+			p(style="font-size:1.3em") Note that <b>x_batch</b> and <b>y_batch</b> are defined as Tensorflow placeholder variables. To construct the Neural Network normally we need provide actual tensors as inputs. However here x and y are only initialized at training time when we start calling <b>get_batch</b>. To solve this problem, Tensorflow allows us to define placeholder variables which do not have a specified value when created, but still allow us to construct the network. Then, when we run the network, we can pass variables to Tensorflow which it will substitute for the placeholder variables (this will become clear later in the code). After setting up the convolution layer, the line <b>hist_out1 = tf.histogram_summary('out1_hist', out1)</b> sets up a histogram summary op called <b>hist_out1</b>. When run, this op will produce a histogram of the values of <b>out1</b>, the output of the convolution layer, and will give it the label <b>out1_hist</b> in the Tensorboard GUI.
+
+			p(style="font-size:1.3em") After the convolution layer, we define the fully-connected layer and loss function:
+
+			pre
+				code.
+					#Now need to reshape the output of the conv layer to be able
+					#to feed it to a fully connected layer
+					in2 = tf.reshape(out1, [Nbatch, -1])
+					W2 = tf.Variable(tf.random_normal([Nfilters*Npix*Npix,Nlabels], stddev=std_init), name='W2')
+					b2 = tf.Variable(tf.zeros([Nlabels]), name='b2')
+					out2 = tf.matmul(in2,W2)+b2
+
+					#histogram to monitor out2
+					hist_out2 = tf.histogram_summary('out2_hist', out2)
+
+					#Now set up the loss function and regularization terms
+					#note that here we again use the y placeholder variable
+					class_loss = 1.0/Nlabels*tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(out2,y_batch, name='smaxloss'))
+
+					reg_loss = tf.nn.l2_loss(W1) + tf.nn.l2_loss(b1) + tf.nn.l2_loss(W2) + tf.nn.l2_loss(b2)
+
+					loss = class_loss + weight_decay*reg_loss
+
+					#Scalar summary to monitor loss
+					loss_sum = tf.scalar_summary('loss_summary', loss)
+
+					#running each summary individually is cumbersome, so we can
+					#create a single op that will run all of them at once
+					full_Summary = tf.merge_all_summaries()
+
+					#create another loss summary to calculate validation error
+					val_loss_sum = tf.scalar_summary('val_summary', loss)
+
+			p(style="font-size:1.3em") The convolution layer output <b>out1</b> is a multidimensional tensor, whereas a fully-connected layer expects a 1 dimensional vector as input, so we have to reshape it first using <b>in2 = tf.reshape(out1, [Nbatch, -1])</b>. The fully-connected layer output node is called <b>out2</b> and we add another histrogram summary with <b>hist_out2 = tf.histogram_summary('out2_hist', out2)</b>. Together with the earlier histogram summary this will let us monitor how our neural network is transforming the input data. Furthermore we want to keep track of the loss as we train to see if we are making progress, we do this using <b>loss_sum = tf.scalar_summary('loss_summary', loss)</b>. When run, the op <b>loss_sum</b> will output the value of the loss at that point. Tensorboard will collect all the points and display them in a graph so we can see whether the loss is decreasing. Finally we make use of a useful feature of Tensorflow: <b>full_Summary = tf.merge_all_summaries()</b>; what this does is define another summary op that will run all our earlier summary ops simultaneously. This way we only have to run one op to output all the summaries instead of having to run a bunch of different ops all the time.
+
+			p(style="font-size:1.3em") In the next part of the code we set up the optimization op, create a Tensorflow session and define a summary writer.
+
+			pre
+				code.
+					#Finally set up an optimizer to minimize the loss function
+					opt = tf.train.MomentumOptimizer(lr, momentum, name='mom')
+					train = opt.minimize(loss)
+
+					#now create and initialize the graph
+					init = tf.initialize_all_variables()
+					sess = tf.Session()
+
+					sess.run(init)
+
+					#also create a write to write out the summary files
+					train_write = tf.train.SummaryWriter('./summaries', sess.graph_def)
+
+			p(style="font-size:1.3em") The line <b>opt = tf.train.MomentumOptimizer(lr, momentum, name='mom')</b> defines a momentum gradient descent optimizer and <b>train = opt.minimize(loss)</b> defines the op <b>train</b> which will run a step of momentum gradient descent when run. Finally it is  time to note that when a summary op is run it returns a summary string, however the summary string still needs to be written to a file, for that we need a summary writer. So with the line <b>train_write = tf.train.SummaryWriter('./summaries', sess.graph_def)</b> we make a summary writer which will write summary string files to the folder ./summaries (the next part of the code will show us how that works).
+
+			p(style="font-size:1.3em") In the final part of the code we
