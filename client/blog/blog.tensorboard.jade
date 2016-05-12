@@ -39,7 +39,7 @@ div.content
 				li(style="font-size:1.3em") Attach summary ops to the nodes you are interested in examining.
 				li(style="font-size:1.3em") Start running your graph as you normally would
 				li(style="font-size:1.3em") Additionally run the summary ops
-				li(style="font-size:1.3em") When the code is done running, run Tensorboard to visualize the sumamry outputs
+				li(style="font-size:1.3em") When the code is done running, run Tensorboard to visualize the summary outputs
 
 			p(style="font-size:1.8em") Convolutional Neural Network example
 
@@ -147,7 +147,7 @@ div.content
 					#create another loss summary to calculate validation error
 					val_loss_sum = tf.scalar_summary('val_summary', loss)
 
-			p(style="font-size:1.3em") The convolution layer output <b>out1</b> is a multidimensional tensor, whereas a fully-connected layer expects a 1 dimensional vector as input, so we have to reshape it first using <b>in2 = tf.reshape(out1, [Nbatch, -1])</b>. The fully-connected layer output node is called <b>out2</b> and we add another histrogram summary with <b>hist_out2 = tf.histogram_summary('out2_hist', out2)</b>. Together with the earlier histogram summary this will let us monitor how our neural network is transforming the input data. Furthermore we want to keep track of the loss as we train to see if we are making progress, we do this using <b>loss_sum = tf.scalar_summary('loss_summary', loss)</b>. When run, the op <b>loss_sum</b> will output the value of the loss at that point. Tensorboard will collect all the points and display them in a graph so we can see whether the loss is decreasing. Finally we make use of a useful feature of Tensorflow: <b>full_Summary = tf.merge_all_summaries()</b>; what this does is define another summary op that will run all our earlier summary ops simultaneously. This way we only have to run one op to output all the summaries instead of having to run a bunch of different ops all the time.
+			p(style="font-size:1.3em") The convolution layer output <b>out1</b> is a multidimensional tensor, whereas a fully-connected layer expects a 1 dimensional vector as input, so we have to reshape it first using <b>in2 = tf.reshape(out1, [Nbatch, -1])</b>. The fully-connected layer output node is called <b>out2</b> and we add another histogram summary with <b>hist_out2 = tf.histogram_summary('out2_hist', out2)</b>. Together with the earlier histogram summary this will let us monitor how our neural network is transforming the input data. Furthermore we want to keep track of the loss as we train to see if we are making progress, we do this using <b>loss_sum = tf.scalar_summary('loss_summary', loss)</b>. When run, the op <b>loss_sum</b> will output the value of the loss at that point. Tensorboard will collect all the points and display them in a graph so we can see whether the loss is decreasing. Finally we make use of a useful feature of Tensorflow: <b>full_Summary = tf.merge_all_summaries()</b>; what this does is define another summary op that will run all our earlier summary ops simultaneously. This way we only have to run one op to output all the summaries instead of having to run a bunch of different ops all the time.
 
 			p(style="font-size:1.3em") In the next part of the code we set up the optimization op, create a Tensorflow session and define a summary writer.
 
@@ -211,4 +211,18 @@ div.content
 
 			p(style="font-size:1.3em") The CIFAR10 data comes as a matrix with dimensions \(N\times 1024\) where each row of the matrix is all the pixels for one image as a list. Our neural network expects \(32\times32\) images as input so we need to reshape the data.
 
-			p(style="font-size:1.3em") If you remember, at the beginning of this post we discussed the use of placeholder variables. The beginning of the training loop shows how using placeholder variables changes the way we run our network. We first get a new batch every iteration by calling <b>get_batch</b> and then we run the <b>train</b> op with the line <b>sess.run(train, feed_dict={x_batch: tup[0], y_batch:tup[1]})</b>. When we provide the argument <b>feed_dict={x_batch: tup[0], y_batch:tup[1]}</b> it tells tensorflow to substitute the placeholder variables <b>x_batch</b> and <b>y_batch</b> with the values returned from <b>get_batch</b>. This way we can provide a different batch of data to the network for every training iteration.
+			p(style="font-size:1.3em") If you remember, at the beginning of this post we discussed the use of placeholder variables. The beginning of the training loop shows how using placeholder variables changes the way we run our network. We first get a new batch every iteration by calling <b>get_batch</b> and then we run the <b>train</b> op with the line <b>sess.run(train, feed_dict={x_batch: tup[0], y_batch:tup[1]})</b>. When we provide the argument <b>feed_dict={x_batch: tup[0], y_batch:tup[1]}</b> it tells Tensorflow to substitute the placeholder variables <b>x_batch</b> and <b>y_batch</b> with the values returned from <b>get_batch</b>. This way we can provide a different batch of data to the network for every training iteration.
+
+			p(style="font-size:1.3em") Here we also finally start running the summary ops and outputting summary files. The line <b>sumstr = sess.run(full_Summary,feed_dict={x_batch: tup[0], y_batch:tup[1]})</b> runs our merged summary op that will run all of our summaries simultaneously and returns the summary string <b>sumstr</b>. Then we can write the summaries by calling <b>train_write.add_summary(sumstr,step)</b>. When we created <b>train_write</b> we specified the folder ./summaries as an argument and so the summaries will be written to the a folder called summaries in the current directory.
+
+			p(style="font-size:1.3em") And that is all that is needed to set up your code to be able to use Tensorflow. If we navigate to the folder where the code is using the command line and use the command <b>tensorboard --logdir=./summaries</b> it will start running a server that we can access by visiting its address using a web browser. In my case the url I need to enter is <b>0.0.0.0:6006</b>, it should tell you in the command line where to go to. Here are some screenshots of the what Tensorboard outputs running after running the code example here:
+
+			img(src="/img/tensorboard1.png" style="width:700px;height:700px;margin-bottom:40px")
+
+			img(src="/img/tensorboard2.png" style="width:700px;height:700px")
+
+			p(style="font-size:1.3em") Using Tensorboard we can see that our loss function is decreasing nicely and that the distribution of the output parameters of our neural network are well behaved.
+
+			p(style="font-size:1.8em") Closing Remarks
+
+			p(Style="font-size:1.3em") That concludes this post. Again here I covered some of the basic ways to get started with Tensorboard. As we saw, Tensorboard makes it easy to monitor everything that is going on in our code. The <a href="https://www.tensorflow.org/versions/r0.8/how_tos/summaries_and_tensorboard/index.html#tensorboard-visualizing-learning">official documentation</a> has a lot more information on Tensorboard so be sure to read it to learn more about using Tensorboard with Tensorflow.
