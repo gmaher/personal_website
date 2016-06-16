@@ -14,22 +14,19 @@ div.content
 			p(style="font-size:2em") Understanding AlphaGo Part 1: Policy and Value Functions
 
 		div.row(style="margin-bottom:10px")
-			p(style="font-size:1.3em") Go is a classic board game in which players attempt to capture territory by taking turns placing stones. Because of the many different moves players can play at each turn Go has been considered one of the hardest games to master for AI. As such, when AlphaGo beat Go world champion Lee Sedol 4-1 it was clear that a new precedent had been set for AI.
+			p(style="font-size:1.3em") Go is a classic board game in which players attempt to capture territory by taking turns placing stones. Because of the many different moves players can play, Go has been considered one of the hardest games to master for AI. As such, when AlphaGo beat Go world champion Lee Sedol 4-1, it was clear that a new precedent had been set for AI.
 
 			p(style="font-size:1.3em") In January 2016 Google's Deep Mind published a paper about how they built AlphaGo. As it turns out AlphaGo is really a creative combination of several different machine learning algorithms. In this post and my next post we will cover exactly how AlphaGo works!
 
 			p(style="font-size:1.8em") Quick Breakdown of AlphaGo 
 
-			p(style="font-size:1.3em")
+			p(style="font-size:1.3em")  Applications like AlphaGo are different from regular machine learning applications in that they have to be able to explore an environment, rather than just make predictions. We typically call this type of machine learning <b>Reinforcement Learning</b>. AlphaGo makes use of a particular reinforcement learning model called the <b>Actor-Critic</b> model.
 
-			ul
-				li(style="font-size:1.3em")
+			p(style="font-size:1.3em") In the Actor-Critic model, artificial intelligence is created by learning two functions: a <b>Policy Function</b> and a <b>Value Function</b>. The policy function tells us, at any given state of the environment, what the best action is to take. The value function tells us what the value of a particular state of the environment is. So for example, with AlphaGo the policy function looks at the pieces on the board and tells us what would be the best move to make and the value function estimates the probability of winning from the pieces on the board and their positions.
 
-				li(style="font-size:1.3em") 
+			p(style="font-size:1.3em") The Actor-Critic model has been around for a long time however. Also note that it is possible to create artificial intelligence with only a policy function or a value function. The Policy function tells us what actions to take, so we could simply pick the best action at every step and this would play the game for us. Alternatively we can use the value function to find the most valuable state and pick the action that takes us there. The cleverness of AlpaGo really comes from the way DeepMind combined both the policy and value function into one algorithm. The combination was done using <b>Monte Carlo Tree Search (MCTS)</b>. MCTS is fairly complex, so I will explain that in part 2 of this post series.
 
-				li(style="font-size:1.3em")
-
-				li(style="font-size:1.3em")
+			p(style="font-size:1.3em") We now know a bit about how AlphaGo works and what policy and value functions are. However, we still need to determine how to actually learn the functions from data or simulations. This is explained below.
 
 			p(style="font-size:1.8em") Policy Functions
 
