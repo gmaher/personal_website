@@ -24,18 +24,34 @@ div.content
 
 			p(style="font-size:1.3em") In the Actor-Critic model, artificial intelligence is created by learning two functions: a <b>Policy Function</b> and a <b>Value Function</b>. The policy function tells us, at any given state of the environment, what the best action is to take. The value function tells us what the value of a particular state of the environment is. So for example, with AlphaGo the policy function looks at the pieces on the board and tells us what would be the best move to make and the value function estimates the probability of winning from the pieces on the board and their positions.
 
-			p(style="font-size:1.3em") The Actor-Critic model has been around for a long time however. Also note that it is possible to create artificial intelligence with only a policy function or a value function. The Policy function tells us what actions to take, so we could simply pick the best action at every step and this would play the game for us. Alternatively we can use the value function to find the most valuable state and pick the action that takes us there. The cleverness of AlpaGo really comes from the way DeepMind combined both the policy and value function into one algorithm. The combination was done using <b>Monte Carlo Tree Search (MCTS)</b>. MCTS is fairly complex, so I will explain that in part 2 of this post series.
+			p(style="font-size:1.3em") The Actor-Critic model has been around for a long time however. Also note that it is possible to create artificial intelligence with only a policy function or a value function. The Policy function tells us what actions to take, so we could simply pick the best action at every step and this would play the game for us. Alternatively we can use the value function to find the most valuable state and pick the action that takes us there. The cleverness of AlphaGo really comes from the way DeepMind combined both the policy and value function into one algorithm. The combination was done using <b>Monte Carlo Tree Search (MCTS)</b>. MCTS is fairly complex, so I will explain that in part 2 of this post series.
 
 			p(style="font-size:1.3em") We now know a bit about how AlphaGo works and what policy and value functions are. However, we still need to determine how to actually learn the functions from data or simulations. This is explained below.
 
 			p(style="font-size:1.8em") Policy Functions
 
-			p(style="font-size:1.3em")
+			p(style="font-size:1.3em") As mentioned earlier, a policy function is a function that tells us what action to take based on the state of the enviornment. To properly explain how policy and value functions work we need to introduce some notation.
 
-			p(style="font-size:1.3em")
+			p(style="font-size:1.3em") When we talk about actions, what we really mean is that there is a discrete set of all possible actions \(A:=\{a_1,...,a_n\}\), where \(a_i\) is the \(i\)th action. At any given moment the AI is deciding which action \(a_i\) to choose.
+
+			p(style="font-size:1.3em") For the environment, what we really mean is that at step \(t\) there is some state vector \(s_t\) that is a collection of variables that describe the state of the environment. In Go for example, \(s\) would be the state of the board, i.e. the state of every square on the board and any other information that might be useful to describe the state of the game.
+
+			p(style="font-size:1.3em") A policy function is then simply a function \(f\) that maps from the state \(s_t\) to an action \(a_t\), i.e. \(f(s_t)=a_t\). It is also possible to think about policy functions from a probabilistic perspective. In that case the policy function represents the probability of selecting action \(a_t\) given that we are in state \(s_t\), i.e. our policy function is \(P(a_t|s_t)\). To select an action we either then choose the action with the highest probability or simply sample an action from \(P(a_t|s_t)\).
+
+			p(style="font-size:1.3em") We still need to learn the policy function however, two ways to do this are through supervised learning or reinforcement learning. For supervised learning we require a dataset of states \(s_t\) and actions \(a_t\) taken in those states. We then learn the policy function by training a model to predict the correct action from the provided states. DeepMind trained AlphaGo in this way using data collected from expert Go players.
+
+			p(style="font-size:1.3em") A drawback of the supervised learning approach is that the policy function will only learn to predict human moves. What we really want is something that will learn to be better than humans (e.g. SkyNet)! This is where reinforcement learning comes in. Reinforcement learning allows us to learn the policy function through practicing, or simulating games.
+
+			p(style="font-size:1.3em") To be precise, we initialize our policy function \(P(a_t|s_t)\) and then start selecting moves that it suggests and play games in this way. We then set up a reward function \(r(s_t)\) which is positive if we are doing well and negative if we are not. For AlphaGo the reward was simply \(r(s_t)=1\) if it won the game of Go and \(r(s_t)=-1\) if it lost. We then learn the policy function by adapting the parameters of our model to maximize the function:
+
+			p(style="font-size:1.3em") $$\log \left(P(a_t|s_t)\right)r_t$$
+
+			p(style="font-size:1.3em") It takes a bit of mathematics to understand why exactly maximizing the function above allows us to learn a good policy function. The intuition is that if \(r_t\) is positive then we can maximize the function by increasing \(P(a_t|s_t)\) and if \(r_t\) is negative we can maximize it by decreasing \(P(a_t|s_t)\). So if we won the game we will try to increase the probability of taking those actions again and if we lost we will try to decrease the probability of taking those actions so that we hopefully do not lose again.
+
+			p(Style="font-size:1.3em") The way DeepMind used reinforcement learning to train AlphaGo is fascinatig. They first trained AlphaGo using supervised learning and expert human Go move data. Then they improved AlphaGo by letting it play games against itself and used reinforcement learning to adapt its parameters. So in the final stages AlphaGo was learning all by itself how to improve its game playing skills! 
 
 			p(style="font-size:1.8em") Value Functions
 
-			p(style="font-size:1.3em")
+			p(style="font-size:1.3em") Using the policy function alone, AlphaGo won 85% of games against current state of the art Go playing programs. However DeepMind further improved AlphaGo through the use of value functions.
 
 			p(style="font-size:1.3em")
