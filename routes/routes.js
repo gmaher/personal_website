@@ -7,4 +7,5 @@ module.exports = function(app){
 	app.get('/partials/*', function(req,res){
 		res.render('../client/' + req.params[0]);
 	})
+
 };
