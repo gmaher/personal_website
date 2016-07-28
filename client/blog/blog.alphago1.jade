@@ -11,12 +11,12 @@
 div.content
 	div.col-md-10
 		div.row(style="margin-bottom:10px")
-			p(style="font-size:2em") Understanding AlphaGo Part 1: Policy and Value Functions
+			p(style="font-size:2em") Understanding AlphaGo Part 1: Policy Functions
 
 		div.row(style="margin-bottom:10px")
 			p(style="font-size:1.3em") Go is a classic board game in which players attempt to capture territory by taking turns placing stones. Because of the many different moves players can play, Go has been considered one of the hardest games to master for AI. As such, when AlphaGo beat Go world champion Lee Sedol 4-1, it was clear that a new precedent had been set for AI.
 
-			p(style="font-size:1.3em") In January 2016 Google's Deep Mind published a paper about how they built AlphaGo. As it turns out AlphaGo is really a creative combination of several different machine learning algorithms. In this post and my next post we will cover exactly how AlphaGo works!
+			p(style="font-size:1.3em") In January 2016 Google's Deep Mind published a paper about how they built AlphaGo. As it turns out AlphaGo is really a creative combination of several different machine learning algorithms. In this post and the next two posts we will cover exactly how AlphaGo works!
 
 			p(style="font-size:1.8em") Quick Breakdown of AlphaGo 
 
@@ -44,14 +44,18 @@ div.content
 
 			p(style="font-size:1.3em") To be precise, we initialize our policy function \(P(a_t|s_t)\) and then start selecting moves that it suggests and play games in this way. We then set up a reward function \(r(s_t)\) which is positive if we are doing well and negative if we are not. For AlphaGo the reward was simply \(r(s_t)=1\) if it won the game of Go and \(r(s_t)=-1\) if it lost. We then learn the policy function by adapting the parameters of our model to maximize the function:
 
-			p(style="font-size:1.3em") $$\log \left(P(a_t|s_t)\right)r_t$$
+			p(style="font-size:1.3em") $$\frac{1}{T}\sum_{t=0}^T\log \left(P(a_t|s_t)\right)r_T$$
+
+			p(style="font-size:1.3em") where \(T\) is the time step of the final move. Note that the same reward \(r_T\) is multiplied by every prediction \(P(a_t|s_t)\) made during the game. This is because, in the AlphaGo paper, the outcome of the game is considered to be related to every move made since the beginning of the game.
 
 			p(style="font-size:1.3em") It takes a bit of mathematics to understand why exactly maximizing the function above allows us to learn a good policy function. The intuition is that if \(r_t\) is positive then we can maximize the function by increasing \(P(a_t|s_t)\) and if \(r_t\) is negative we can maximize it by decreasing \(P(a_t|s_t)\). So if we won the game we will try to increase the probability of taking those actions again and if we lost we will try to decrease the probability of taking those actions so that we hopefully do not lose again.
 
 			p(Style="font-size:1.3em") The way DeepMind used reinforcement learning to train AlphaGo is fascinatig. They first trained AlphaGo using supervised learning and expert human Go move data. Then they improved AlphaGo by letting it play games against itself and used reinforcement learning to adapt its parameters. So in the final stages AlphaGo was learning all by itself how to improve its game playing skills! 
 
-			p(style="font-size:1.8em") Value Functions
+			p(style="font-size:1.8em") Closing Remarks
 
-			p(style="font-size:1.3em") Using the policy function alone, AlphaGo won 85% of games against current state of the art Go playing programs. However DeepMind further improved AlphaGo through the use of value functions.
+			p(style="font-size:1.3em") Using the policy function alone, AlphaGo won 85% of games against current state of the art Go playing programs. This shows that even a simple reinforcement learning approach can be promising. The rest of the improvements to AlphaGo came from the use of value functions and MCTS which I will cover in my next few posts.
 
-			p(style="font-size:1.3em")
+			p(style="font-size:1.8em") References
+
+			p(style="font-size:1.3em") David Silver et al, Mastering the game of Go with deep neural networks and tree search, <i>Nature</i>, volume 529, 2016
